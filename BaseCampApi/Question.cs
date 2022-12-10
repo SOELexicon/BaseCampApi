@@ -11,19 +11,19 @@ namespace BaseCampApi {
 	public class Questionnaire : CreatedItem {
 		public long position;
 		public string name;
-		public int questions_count;
+		public long questions_count;
 		public string questions_url;
 
-		async static public Task<Questionnaire> GetQuestionnaire(Api api, long projectId, long questionnaireId) {
-			return await api.GetAsync<Questionnaire>(Api.Combine("buckets", projectId, "questionnaires", questionnaireId));
+		 static public Questionnaire GetQuestionnaire(Api api, long projectId, long questionnaireId) {
+			return  api.get<Questionnaire>(Api.Combine("buckets", projectId, "questionnaires", questionnaireId));
 		}
 
-		async public Task<ApiList<Question>> GetAllQuestions(Api api, Status status = Status.active) {
-			return await api.GetAsync<ApiList<Question>>(Api.UriToApi(questions_url), status == Status.active ? null : new { status });
+		 public ApiList<Question> GetAllQuestions(Api api, Status status = Status.active) {
+			return  api.get<ApiList<Question>>(Api.UriToApi(questions_url), status == Status.active ? null : new { status });
 		}
 
-		async public Task<Question> GetQuestion(Api api, long questionId) {
-			return await Question.GetQuestion(api, bucket.id, questionId);
+		 public Question GetQuestion(Api api, long questionId) {
+			return  Question.GetQuestion(api, bucket.id, questionId);
 		}
 
 #if false
@@ -43,8 +43,8 @@ namespace BaseCampApi {
 	public class QuestionSchedule : ApiEntryBase {
 		public string frequency;
 		public string[] days;
-		public int hour;
-		public int minute;
+		public long hour;
+		public long minute;
 		public string start_date;
 	}
 
@@ -52,16 +52,16 @@ namespace BaseCampApi {
 		public Parent parent;
 		public bool paused;
 		public QuestionSchedule schedule;
-		public int answers_count;
+		public long answers_count;
 		public string answers_url;
 
-		async static public Task<ApiList<Question>> GetAllQuestions(Api api, long projectId, long questionnaireId, Status status = Status.active) {
-			return await api.GetAsync<ApiList<Question>>(Api.Combine("buckets", projectId, "questionnaires", questionnaireId, "questions"),
+		 static public ApiList<Question> GetAllQuestions(Api api, long projectId, long questionnaireId, Status status = Status.active) {
+			return  api.get<ApiList<Question>>(Api.Combine("buckets", projectId, "questionnaires", questionnaireId, "questions"),
 				status == Status.active ? null : new { status });
 		}
 
-		async static public Task<Question> GetQuestion(Api api, long projectId, long questionId) {
-			return await api.GetAsync<Question>(Api.Combine("buckets", projectId, "questions", questionId));
+		 static public Question GetQuestion(Api api, long projectId, long questionId) {
+			return  api.get<Question>(Api.Combine("buckets", projectId, "questions", questionId));
 		}
 
 #if false
@@ -85,12 +85,12 @@ namespace BaseCampApi {
 		}
 #endif
 
-		async public Task<ApiList<QuestionAnswer>> GetAllQuestionAnswers(Api api, Status status = Status.active) {
-			return await api.GetAsync<ApiList<QuestionAnswer>>(Api.UriToApi(answers_url), status == Status.active ? null : new { status });
+		 public ApiList<QuestionAnswer> GetAllQuestionAnswers(Api api, Status status = Status.active) {
+			return  api.get<ApiList<QuestionAnswer>>(Api.UriToApi(answers_url), status == Status.active ? null : new { status });
 		}
 
-		async public Task<QuestionAnswer> GetQuestionAnswer(Api api, long QuestionAnswerId) {
-			return await QuestionAnswer.GetQuestionAnswer(api, bucket.id, QuestionAnswerId);
+		public QuestionAnswer GetQuestionAnswer(Api api, long QuestionAnswerId) {
+			return  QuestionAnswer.GetQuestionAnswer(api, bucket.id, QuestionAnswerId);
 		}
 
 #if false
@@ -106,13 +106,13 @@ namespace BaseCampApi {
 		public string content;
 		public string group_on;
 
-		async static public Task<ApiList<QuestionAnswer>> GetAllQuestionAnswers(Api api, long projectId, long questionId, Status status = Status.active) {
-			return await api.GetAsync<ApiList<QuestionAnswer>>(Api.Combine("buckets", projectId, "questions", questionId, "answers"),
+		 static public ApiList<QuestionAnswer> GetAllQuestionAnswers(Api api, long projectId, long questionId, Status status = Status.active) {
+			return  api.get<ApiList<QuestionAnswer>>(Api.Combine("buckets", projectId, "questions", questionId, "answers"),
 				status == Status.active ? null : new { status });
 		}
 
-		async static public Task<QuestionAnswer> GetQuestionAnswer(Api api, long projectId, long QuestionAnswerId) {
-			return await api.GetAsync<QuestionAnswer>(Api.Combine("buckets", projectId, "question_answers", QuestionAnswerId));
+		 static public QuestionAnswer GetQuestionAnswer(Api api, long projectId, long QuestionAnswerId) {
+			return  api.get<QuestionAnswer>(Api.Combine("buckets", projectId, "question_answers", QuestionAnswerId));
 		}
 
 #if false

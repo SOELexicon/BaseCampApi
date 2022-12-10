@@ -5,6 +5,8 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
+using System.Runtime;
+using System.Web.Helpers;
 
 namespace BaseCampApi {
 
@@ -84,18 +86,20 @@ namespace BaseCampApi {
 		/// Set to greater than zero to log all requests going to Basecamp. 
 		/// Larger numbers give more verbose logging.
 		/// </summary>
-		int LogRequest  { get; }
+		long LogRequest  { get; }
 
 		/// <summary>
 		/// Set greater than zero to log all replies coming from Basecamp. 
 		/// Larger numbers give more verbose logging.
 		/// </summary>
-		int LogResult  { get; }
+		long LogResult  { get; }
+        string Code { get; set; }
+        string state { get; set; }
 
-		/// <summary>
-		/// After BaseCampApi has update tokens, save the infomation.
-		/// </summary>
-		void Save();
+        /// <summary>
+        /// After BaseCampApi has update tokens, save the infomation.
+        /// </summary>
+        void Save();
 	}
 
 	/// <summary>
@@ -112,12 +116,14 @@ namespace BaseCampApi {
 		/// </summary>
 		public string ApplicationName { get; set; }
 
-		/// <summary>
-		/// Contact (website or email) is required by the api - they may use this information to get in touch 
-		/// if you're doing something wrong (so they can warn you before you're blacklisted) or something 
-		/// awesome (so they can congratulate you).
-		/// </summary>
-		public string Contact { get; set; }
+        public string Code { get; set; }
+        public string state { get; set; }
+        /// <summary>
+        /// Contact (website or email) is required by the api - they may use this information to get in touch 
+        /// if you're doing something wrong (so they can warn you before you're blacklisted) or something 
+        /// awesome (so they can congratulate you).
+        /// </summary>
+        public string Contact { get; set; }
 
 		/// <summary>
 		/// Redirect uri for authorisation. Usually "http://localhost:port/". 
@@ -183,13 +189,13 @@ namespace BaseCampApi {
 		/// Set to greater than zero to log all requests going to Basecamp. 
 		/// Larger numbers give more verbose logging.
 		/// </summary>
-		public int LogRequest { get; set; }
+		public long LogRequest { get; set; }
 
 		/// <summary>
 		/// Set greater than zero to log all replies coming from Basecamp. 
 		/// Larger numbers give more verbose logging.
 		/// </summary>
-		public int LogResult { get; set; }
+		public long LogResult { get; set; }
 
 		[JsonIgnore]
 		public string Filename;
@@ -206,22 +212,49 @@ namespace BaseCampApi {
 			return settings;
 		}
 
-		/// <summary>
-		/// Load a Settings object from the supplied json file
-		/// </summary>
-		public virtual void Load(string filename) {
-			if(File.Exists(filename))
+
+        /// <summary>
+        /// Load a Settings object from LocalApplicationData/BaseCampApi/Settings.json
+        /// </summary>
+        public static Settings LoadJson()
+		{
+        ;
+            string dataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "BaseCampApi");
+            Directory.CreateDirectory(dataPath);
+            string filename = Path.Combine(dataPath, "Settings.json");
+            Settings settings = new Settings();
+            settings.Load(filename);
+            return settings;
+        }
+        /// <summary>
+        /// Load a Settings object from the supplied json file
+        /// </summary>
+        public virtual void Load(string filename) {
+			if(System.IO.File.Exists(filename))
 				using (StreamReader s = new StreamReader(filename))
-					JsonConvert.PopulateObject(s.ReadToEnd(), this);
+					JsonConvert.PopulateObject("", this);
 			this.Filename = filename;
 		}
 
-		/// <summary>
-		/// Save updated settings back where they came from
-		/// </summary>
-		public virtual void Save() {
-			Directory.CreateDirectory(Path.GetDirectoryName(Filename));
-			using (StreamWriter w = new StreamWriter(Filename))
+        /// <summary>
+        /// Load a Settings object from the supplied json file
+        /// </summary>
+        public virtual void LoadJson(string json)
+        {
+       
+                    JsonConvert.PopulateObject(json, this);
+          //  this.Filename = filename;
+        }
+
+        /// <summary>
+        /// Save updated settings back where they came from
+        /// </summary>
+        public virtual void Save() {
+            string dataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "BaseCampApi");
+            Directory.CreateDirectory(dataPath);
+            string filename = Path.Combine(dataPath, "Settings.json");
+            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+			using (StreamWriter w = new StreamWriter(filename))
 				w.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented));
 		}
 

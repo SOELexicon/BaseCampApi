@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BaseCampApi {
 
@@ -38,14 +37,14 @@ namespace BaseCampApi {
 	/// </summary>
 	public class Recording : CreatedItem {
 		public bool visible_to_clients;
-		static async public Task<ApiList<T>> GetAllRecordings<T>(Api api, RecordingType type, long projectId, Status status = Status.active, DateSort sort = DateSort.created_at, SortDirection direction = SortDirection.desc)
+		static  public ApiList<T> GetAllRecordings<T>(Api api, RecordingType type, long projectId, Status status = Status.active, DateSort sort = DateSort.created_at, SortDirection direction = SortDirection.desc)
 			where T:new(){
-			return await GetAllRecordings<T>(api, type, new long[] { projectId }, status, sort, direction);
+			return  GetAllRecordings<T>(api, type, new long[] { projectId }, status, sort, direction);
 		}
 
-		static async public Task<ApiList<T>> GetAllRecordings<T>(Api api, RecordingType type, long[] projectIds = null, Status status = Status.active, DateSort sort = DateSort.created_at, SortDirection direction = SortDirection.desc)
+		static  public ApiList<T> GetAllRecordings<T>(Api api, RecordingType type, long[] projectIds = null, Status status = Status.active, DateSort sort = DateSort.created_at, SortDirection direction = SortDirection.desc)
 			where T:new() {
-			return await api.GetAsync<ApiList<T>>(Api.Combine("projects", "recordings"), new {
+			return  api.get<ApiList<T>>(Api.Combine("projects", "recordings"), new {
 				type,
 				bucket = projectIds,
 				status,
@@ -54,12 +53,12 @@ namespace BaseCampApi {
 			});
 		}
 
-		static async public Task SetStatus(Api api, long bucket, long id, Status status) {
-			await api.PutAsync(Api.Combine("buckets", bucket, "recordings", id, "status", status));
+		static  public void SetStatus(Api api, long bucket, long id, Status status) {
+			 api.Put(Api.Combine("buckets", bucket, "recordings", id, "status", status));
 		}
 
-		async public Task SetStatus(Api api, Status status) {
-			await SetStatus(api, bucket.id, id, status);
+		 public void  SetStatus(Api api, Status status) {
+			 SetStatus(api, bucket.id, id, status);
 		}
 
 	}
@@ -69,15 +68,15 @@ namespace BaseCampApi {
 	/// </summary>
 	public class RecordingWithComments : Recording, ISubscribable {
 		public string subscription_url;
-		public int comments_count;
+		public long comments_count;
 		public string comments_url;
 
 		public string SubscriptionUrl => subscription_url;
 
-		async public Task<ApiList<Comment>> GetComments(Api api) {
+		 public ApiList<Comment> GetComments(Api api) {
 			if (comments_count == 0)
 				return ApiList<Comment>.EmptyList(Api.UriToApi(comments_url));
-			return await api.GetAsync<ApiList<Comment>>(Api.UriToApi(comments_url));
+			return  api.get<ApiList<Comment>>(Api.UriToApi(comments_url));
 		}
 	}
 }

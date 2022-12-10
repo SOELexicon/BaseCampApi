@@ -4,16 +4,16 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
-    <Description>https://raw.githubusercontent.com/nikkilocke/MattermostApi/master/README.md</Description>
-    <Copyright>(c) 2019-2020 Trumphurst Ltd.</Copyright>
-    <PackageProjectUrl>https://github.com/nikkilocke/BaseCampApi</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/nikkilocke/BaseCampApi</RepositoryUrl>
+    <Description>C# wrapper for Basecamp API, un-compiled,  it will work with any version of .NET just need to drop the BaseCampApi dir into your app_code dir to use.</Description>
+    <Copyright>(c) 2019 Trumphurst Ltd, (c) 2022 Craig Wright </Copyright>
+    <PackageProjectUrl>https://github.com/SOELexicon/BaseCampApi</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SOELexicon/BaseCampApi</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <PackageTags>Basecamp API C#</PackageTags>
-    <PackageReleaseNotes>Fix bug in Post Message</PackageReleaseNotes>
-    <AssemblyVersion>1.0.10.0</AssemblyVersion>
-    <FileVersion>1.0.10.0</FileVersion>
-    <Version>1.0.10</Version>
+    <PackageTags>Basecamp ASP.Net API C#</PackageTags>
+    <PackageReleaseNotes>Rewrite api so its not async. and works with traaditional asp.net calls</PackageReleaseNotes>
+    <AssemblyVersion>1.0.5.0</AssemblyVersion>
+    <FileVersion>1.0.5.0</FileVersion>
+    <Version>1.0.5</Version>
   </PropertyGroup>
 
   <ItemGroup>

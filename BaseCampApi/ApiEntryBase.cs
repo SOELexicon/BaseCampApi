@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -63,7 +64,7 @@ namespace BaseCampApi {
 		/// <summary>
 		/// The request status returned by the Api
 		/// </summary>
-		public int status;
+		public long status;
 		/// <summary>
 		/// An error message returned by the Api
 		/// </summary>
@@ -79,7 +80,7 @@ namespace BaseCampApi {
 		/// <summary>
 		/// TotalCount for Lists <see cref="ApiList" />
 		/// </summary>
-		public int TotalCount;
+		public long TotalCount;
 		/// <summary>
 		/// ETag object for caching.
 		/// </summary>
@@ -108,7 +109,8 @@ namespace BaseCampApi {
 		/// </summary>
 		[JsonIgnore]
 		public bool Error {
-			get { return !string.IsNullOrEmpty(MetaData.error); }
+			get { 
+			return !App.Com.Library.HasValue(MetaData); }
 		}
 #if DEBUG
 		/// <summary>
@@ -141,14 +143,14 @@ namespace BaseCampApi {
 		/// <summary>
 		/// Number of items retrieved in this chunk.
 		/// </summary>
-		public int Count {
+		public long Count {
 			get { return List.Count; }
 		}
 
 		/// <summary>
 		/// Total number of items available
 		/// </summary>
-		public int TotalCount {
+		public long TotalCount {
 			get { return MetaData == null || MetaData.TotalCount == 0 ? Count : MetaData.TotalCount; }
 		}
 
@@ -162,7 +164,7 @@ namespace BaseCampApi {
 		/// <summary>
 		/// Get the next chunk of data from the server
 		/// </summary>
-		public async Task<ApiList<T>> GetNext(Api api) {
+		public ApiList<T> GetNext(Api api) {
 			if (!HasMoreData)
 				return null;
 			Match m = Regex.Match(MetaData.Link, @"<(.*)>");
@@ -170,7 +172,7 @@ namespace BaseCampApi {
 				MetaData.Link = null;
 				return null;
 			}
-			return await api.GetAsync<ApiList<T>>(m.Groups[1].Value);
+			return  api.get<ApiList<T>>(m.Groups[1].Value);
 		}
 
 		/// <summary>
@@ -183,7 +185,7 @@ namespace BaseCampApi {
 			while(chunk != null && chunk.Count > 0) {
 				foreach(T t in chunk.List)
 					yield return t;
-				chunk = chunk.GetNext(api).Result;
+				chunk = chunk.GetNext(api);
 			}
 		}
 

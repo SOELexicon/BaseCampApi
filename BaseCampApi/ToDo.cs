@@ -5,28 +5,28 @@ using System.Threading.Tasks;
 
 namespace BaseCampApi {
 	public class ToDoSet : CreatedItem {
-		public int position;
+		public long position;
 		public bool completed;
 		public string completed_ratio;
 		public string name;
-		public int todolists_count;
+		public long todolists_count;
 		public string todolists_url;
 		public string app_todoslists_url;
 
-		async static public Task<ToDoSet> GetToDoSet(Api api, long projectId, long toDoSetId) {
-			return await api.GetAsync<ToDoSet>(Api.Combine("buckets", projectId, "todosets", toDoSetId));
+		 static public ToDoSet GetToDoSet(Api api, long projectId, long toDoSetId) {
+			return  api.get<ToDoSet>(Api.Combine("buckets", projectId, "todosets", toDoSetId));
 		}
 
-		async public Task<ApiList<ToDoList>> GetAllToDoLists(Api api, Status status = Status.active) {
-			return await api.GetAsync<ApiList<ToDoList>>(Api.UriToApi(todolists_url), status == Status.active ? null : new { status });
+		 public ApiList<ToDoList> GetAllToDoLists(Api api, Status status = Status.active) {
+			return  api.get<ApiList<ToDoList>>(Api.UriToApi(todolists_url), status == Status.active ? null : new { status });
 		}
 
-		async public Task<ToDoList> GetToDoList(Api api, long toDoListId) {
-			return await ToDoList.GetToDoList(api, bucket.id, toDoListId);
+		public ToDoList GetToDoList(Api api, long toDoListId) {
+			return  ToDoList.GetToDoList(api, bucket.id, toDoListId);
 		}
 
-		async public Task<ToDoList> CreateToDoList(Api api, string name, string description) {
-			return await ToDoList.Create(api, bucket.id, id, name, description);
+		 public ToDoList CreateToDoList(Api api, string name, string description) {
+			return  ToDoList.Create(api, bucket.id, id, name, description);
 		}
 
 #if false
@@ -40,7 +40,7 @@ namespace BaseCampApi {
 	}
 
 	public class ToDoList : RecordingWithComments {
-		public int position;
+		public long position;
 		public Parent parent;
 		public string description;
 		public bool completed;
@@ -50,48 +50,48 @@ namespace BaseCampApi {
 		public string groups_url;
 		public string app_todos_url;
 
-		async static public Task<ApiList<ToDoList>> GetAllToDoLists(Api api, long projectId, long toDoSetId, Status status = Status.active) {
-			return await api.GetAsync<ApiList<ToDoList>>(Api.Combine("buckets", projectId, "todosets", toDoSetId, "todolists"),
+		 static public ApiList<ToDoList> GetAllToDoLists(Api api, long projectId, long toDoSetId, Status status = Status.active) {
+			return  api.get<ApiList<ToDoList>>(Api.Combine("buckets", projectId, "todosets", toDoSetId, "todolists"),
 				status == Status.active ? null : new { status });
 		}
 
-		async static public Task<ToDoList> GetToDoList(Api api, long projectId, long toDoListId) {
-			return await api.GetAsync<ToDoList>(Api.Combine("buckets", projectId, "todolists", toDoListId));
+		static public ToDoList GetToDoList(Api api, long projectId, long toDoListId) {
+			return  api.Post<ToDoList>(Api.Combine("buckets", projectId, "todolists", toDoListId));
 		}
 
-		async static public Task<ToDoList> Create(Api api, long projectId, long toDoSetId, string name, string description) {
-			return await api.PostAsync<ToDoList>(Api.Combine("buckets", projectId, "todosets", toDoSetId, "todolists"), null, new {
+		 static public ToDoList Create(Api api, long projectId, long toDoSetId, string name, string description) {
+			return  api.Post<ToDoList>(Api.Combine("buckets", projectId, "todosets", toDoSetId, "todolists"), null, new {
 				name,
 				description
 			});
 		}
 
-		async public Task<ToDoList> Update(Api api, string name, string description) {
-			return await api.PutAsync<ToDoList>(Api.Combine("buckets", bucket.id, "todolists", id), null, new {
+		 public ToDoList Update(Api api, string name, string description) {
+			return  api.Put<ToDoList>(Api.Combine("buckets", bucket.id, "todolists", id), null, new {
 				name,
 				description
 			});
 		}
 
-		async public Task<ApiList<ToDoListGroup>> GetAllToDoListGroups(Api api, Status status = Status.active) {
-			return await api.GetAsync<ApiList<ToDoListGroup>>(Api.UriToApi(groups_url), status == Status.active ? null : new { status });
+		 public ApiList<ToDoListGroup> GetAllToDoListGroups(Api api, Status status = Status.active) {
+			return  api.get<ApiList<ToDoListGroup>>(Api.UriToApi(groups_url), status == Status.active ? null : new { status });
 		}
 
-		async public Task<ToDoListGroup> GetToDoListGroup(Api api, long toDoListGroupId) {
-			return await ToDoListGroup.GetToDoListGroup(api, bucket.id, toDoListGroupId);
+		 public ToDoListGroup GetToDoListGroup(Api api, long toDoListGroupId) {
+			return ToDoListGroup.GetToDoListGroup(api, bucket.id, toDoListGroupId);
 		}
 
-		async public Task<ToDoListGroup> CreateGroup(Api api, string name) {
-			return await ToDoListGroup.Create(api, bucket.id, id, name);
+		 public ToDoListGroup CreateGroup(Api api, string name) {
+			return  ToDoListGroup.Create(api, bucket.id, id, name);
 		}
 
-		async public Task<ApiList<ToDo>> GetAllToDos(Api api, Status status = Status.active) {
-			return await api.GetAsync<ApiList<ToDo>>(Api.UriToApi(todos_url), status == Status.active ? null : new { status });
+		 public ApiList<ToDo> GetAllToDos(Api api, Status status = Status.active) {
+			return  api.get<ApiList<ToDo>>(Api.UriToApi(todos_url), status == Status.active ? null : new { status });
 		}
 	}
 
 	public class ToDoListGroup : RecordingWithComments {
-		public int position;
+		public long position;
 		public Parent parent;
 		public string description;
 		public bool completed;
@@ -101,23 +101,23 @@ namespace BaseCampApi {
 		public string group_position_url;
 		public string app_todos_url;
 
-		async static public Task<ApiList<ToDoListGroup>> GetAllToDoListGroups(Api api, long projectId, long toDoListId, Status status = Status.active) {
-			return await api.GetAsync<ApiList<ToDoListGroup>>(Api.Combine("buckets", projectId, "todolists", toDoListId, "groups"),
+		 static public ApiList<ToDoListGroup> GetAllToDoListGroups(Api api, long projectId, long toDoListId, Status status = Status.active) {
+			return  api.get<ApiList<ToDoListGroup>>(Api.Combine("buckets", projectId, "todolists", toDoListId, "groups"),
 				status == Status.active ? null : new { status });
 		}
 
-		async static public Task<ToDoListGroup> GetToDoListGroup(Api api, long projectId, long toDoListGroupId) {
-			return await api.GetAsync<ToDoListGroup>(Api.Combine("buckets", projectId, "todolists", toDoListGroupId));
+		 static public ToDoListGroup GetToDoListGroup(Api api, long projectId, long toDoListGroupId) {
+			return  api.get<ToDoListGroup>(Api.Combine("buckets", projectId, "todolists", toDoListGroupId));
 		}
 
-		async static public Task<ToDoListGroup> Create(Api api, long projectId, long toDoListId, string name) {
-			return await api.PostAsync<ToDoListGroup>(Api.Combine("buckets", projectId, "todolists", toDoListId, "groups"), null, new {
+		 static public ToDoListGroup Create(Api api, long projectId, long toDoListId, string name) {
+			return  api.Post<ToDoListGroup>(Api.Combine("buckets", projectId, "todolists", toDoListId, "groups"), null, new {
 				name
 			});
 		}
 
-		async public Task Reposition(Api api, int position) {
-			await api.PutAsync(Api.UriToApi(group_position_url), null, new {
+		 public void Reposition(Api api, long newPosition) {
+			 api.Put(Api.UriToApi(group_position_url), null, new {
 				position
 			});
 		}
@@ -125,15 +125,15 @@ namespace BaseCampApi {
 		/// <summary>
 		/// Not documented in api
 		/// </summary>
-		async public Task<ToDoListGroup> Update(Api api, string name, string description) {
-			return await api.PutAsync<ToDoListGroup>(Api.Combine("buckets", bucket.id, "todolists", id), null, new {
+		 public ToDoListGroup Update(Api api, string name, string description) {
+			return  api.Put<ToDoListGroup>(Api.Combine("buckets", bucket.id, "todolists", id), null, new {
 				name,
 				description
 			});
 		}
 
-		async public Task<ApiList<ToDo>> GetAllToDos(Api api, Status status = Status.active) {
-			return await api.GetAsync<ApiList<ToDo>>(Api.UriToApi(todos_url), status == Status.active ? null : new { status });
+		 public ApiList<ToDo> GetAllToDos(Api api, Status status = Status.active) {
+			return  api.get<ApiList<ToDo>>(Api.UriToApi(todos_url), status == Status.active ? null : new { status });
 		}
 	}
 
@@ -164,7 +164,7 @@ namespace BaseCampApi {
 	}
 
 	public class ToDo : RecordingWithComments {
-		public int position;
+		public long position;
 		public Parent parent;
 		public string description;
 		public bool completed;
@@ -175,40 +175,40 @@ namespace BaseCampApi {
 		public List<Person> completion_subscribers;
 		public string completion_url;
 
-		async static public Task<ApiList<ToDo>> GetAllToDos(Api api, long projectId, long toDoListId, Status status = Status.active) {
-			return await api.GetAsync<ApiList<ToDo>>(Api.Combine("buckets", projectId, "todolists", toDoListId),
+		 static public ApiList<ToDo> GetAllToDos(Api api, long projectId, long toDoListId, Status status = Status.active) {
+			return  api.get<ApiList<ToDo>>(Api.Combine("buckets", projectId, "todolists", toDoListId),
 				status == Status.active ? null : new { status });
 		}
 
-		async static public Task<ApiList<ToDo>> GetCompletedToDos(Api api, long projectId, long toDoListId, Status status = Status.active) {
-			return await api.GetAsync<ApiList<ToDo>>(Api.Combine("buckets", projectId, "todolists", toDoListId),
+		 static public ApiList<ToDo> GetCompletedToDos(Api api, long projectId, long toDoListId, Status status = Status.active) {
+			return  api.get<ApiList<ToDo>>(Api.Combine("buckets", projectId, "todolists", toDoListId),
 				status == Status.active ? (object)new { completed = true } : (object)new { status, completed = true });
 		}
 
-		async static public Task<ToDo> GetToDo(Api api, long projectId, long toDoId) {
-			return await api.GetAsync<ToDo>(Api.Combine("buckets", projectId, "todos", toDoId));
+		 static public ToDo GetToDo(Api api, long projectId, long toDoId) {
+			return  api.get<ToDo>(Api.Combine("buckets", projectId, "todos", toDoId));
 		}
 
-		async static public Task<ToDo> CreateToDo(Api api, long projectId, long toDoListId, ToDoData data) {
+		 static public ToDo CreateToDo(Api api, long projectId, long toDoListId, ToDoData data) {
 			if (string.IsNullOrEmpty(data.content))
 				throw new ApplicationException("Content not supplied");
-			return await api.PostAsync<ToDo>(Api.Combine("buckets", projectId, "todolists", toDoListId, "todos"), null, data.ToJObject());
+			return  api.Post<ToDo>(Api.Combine("buckets", projectId, "todolists", toDoListId, "todos"), null, data.ToJObject());
 		}
 
-		async public Task<ToDo> Update(Api api, ToDoData data) {
-			return await api.PostAsync<ToDo>(Api.Combine("buckets", bucket.id, "todos", id, "todos"), null, data.ToJObject());
+		 public ToDo Update(Api api, ToDoData data) {
+			return  api.Post<ToDo>(Api.Combine("buckets", bucket.id, "todos", id, "todos"), null, data.ToJObject());
 		}
 
-		async public Task Complete(Api api) {
-			await api.PostAsync(Api.UriToApi(completion_url));
+		 public void Complete(Api api) {
+			 api.Post(Api.UriToApi(completion_url));
 		}
 
-		async public Task Uncomplete(Api api) {
-			await api.DeleteAsync(Api.UriToApi(completion_url));
+		 public void Uncomplete(Api api) {
+			 api.Delete(Api.UriToApi(completion_url));
 		}
 
-		async public Task Reposition(Api api, int position) {
-			await api.PutAsync(Api.Combine("buckets", bucket.id, "todos", id, "position"), null, new {
+		 public void Reposition(Api api, long newPosition) {
+			 api.Put(Api.Combine("buckets", bucket.id, "todos", id, "position"), null, new {
 				position
 			});
 		}

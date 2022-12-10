@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 
 namespace BaseCampApi {
 	public class Schedule : CreatedItem {
-		public int position;
-		public int entries_count;
+		public long position;
+		public long entries_count;
 		public string entries_url;
 
-		async public static Task<Schedule> GetSchedule(Api api, long projectId, long scheduleId) {
-			return await api.GetAsync<Schedule>(Api.Combine("buckets", projectId, "schedules", scheduleId));
+		 public static Schedule GetSchedule(Api api, long projectId, long scheduleId) {
+			return  api.get<Schedule>(Api.Combine("buckets", projectId, "schedules", scheduleId));
 		}
 
-		async public Task<ApiList<ScheduleEntry>> GetScheduleEntries(Api api, Status status = Status.active) {
-			return await api.GetAsync<ApiList<ScheduleEntry>>(Api.UriToApi(entries_url), status == Status.active ? null : new { status });
+		 public ApiList<ScheduleEntry> GetScheduleEntries(Api api, Status status = Status.active) {
+			return  api.get<ApiList<ScheduleEntry>>(Api.UriToApi(entries_url), status == Status.active ? null : new { status });
 		}
 	}
 
@@ -28,23 +28,23 @@ namespace BaseCampApi {
 		public List<Person> participants;
 
 
-		async public static Task<ApiList<ScheduleEntry>> GetScheduleEntries(Api api, long projectId, long scheduleId, Status status = Status.active) {
-			return await api.GetAsync<ApiList<ScheduleEntry>>(Api.Combine("buckets", projectId, "schedules", scheduleId, "entries"),
+		 public static ApiList<ScheduleEntry> GetScheduleEntries(Api api, long projectId, long scheduleId, Status status = Status.active) {
+			return  api.get<ApiList<ScheduleEntry>>(Api.Combine("buckets", projectId, "schedules", scheduleId, "entries"),
 				status == Status.active ? null : new { status });
 		}
 
-		async public static Task<ScheduleEntry> GetScheduleEntry(Api api, long projectId, long entryId) {
-			return await api.GetAsync<ScheduleEntry>(Api.Combine("buckets", projectId, "schedule_entries", entryId));
+		 public static ScheduleEntry GetScheduleEntry(Api api, long projectId, long entryId) {
+			return  api.get<ScheduleEntry>(Api.Combine("buckets", projectId, "schedule_entries", entryId));
 		}
 
-		async public static Task<ScheduleEntry> GetScheduleEntry(Api api, long projectId, long entryId, DateTime date) {
-			return await api.GetAsync<ScheduleEntry>(Api.Combine("buckets", projectId, "schedule_entries", entryId,
+		 public static ScheduleEntry GetScheduleEntry(Api api, long projectId, long entryId, DateTime date) {
+			return  api.get<ScheduleEntry>(Api.Combine("buckets", projectId, "schedule_entries", entryId,
 				"occurrences", date.ToString("yyyyMMdd")));
 		}
 
-		async public static Task<ScheduleEntry> Create(Api api, long projectId, long scheduleId, string summary, DateTime starts_at, DateTime ends_at, 
-			string description = null, long[] participants = null, bool all_day = true, bool notify = false) {
-			return await api.PostAsync<ScheduleEntry>(Api.Combine("buckets", projectId, "schedules", scheduleId, "entries"), null,
+		 public static ScheduleEntry Create(Api api, long projectId, long scheduleId, string summary, DateTime starts_at, DateTime ends_at, 
+			string description = null, long [] participants = null, bool all_day = true, bool notify = false) {
+			return  api.Post<ScheduleEntry>(Api.Combine("buckets", projectId, "schedules", scheduleId, "entries"), null,
 				new {
 					summary,
 					starts_at = starts_at.ToString("o"),
@@ -56,9 +56,9 @@ namespace BaseCampApi {
 				});
 		}
 
-		async public Task<ScheduleEntry> Update(Api api, string summary, DateTime starts_at, DateTime ends_at,
+		 public ScheduleEntry Update(Api api, string summary, DateTime starts_at, DateTime ends_at,
 			string description, long[] participants, bool? all_day, bool? notify) {
-			return await api.PutAsync<ScheduleEntry>(Api.Combine("buckets", bucket.id, "schedules", parent.id, "entries"), null,
+			return  api.Put<ScheduleEntry>(Api.Combine("buckets", bucket.id, "schedules", parent.id, "entries"), null,
 				new {
 					summary,
 					starts_at = starts_at.ToString("o"),

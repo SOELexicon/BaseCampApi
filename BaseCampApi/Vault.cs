@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace BaseCampApi {
 	/// <summary>
@@ -9,88 +8,88 @@ namespace BaseCampApi {
 	/// </summary>
 	public class Vault : Recording {
 		public Parent parent;
-		public int position;
-		public int documents_count;
+		public long position;
+		public long documents_count;
 		public string documents_url;
-		public int uploads_count;
+		public long uploads_count;
 		public string uploads_url;
-		public int vaults_count;
+		public long vaults_count;
 		public string vaults_url;
 
-		static async public Task<ApiList<Vault>> GetVaults(Api api, long projectId, long vaultId) {
-			return await api.GetAsync<ApiList<Vault>>(Api.Combine("buckets", projectId, "vaults", vaultId, "vaults"));
+		static  public ApiList<Vault> GetVaults(Api api, long projectId, long vaultId) {
+			return  api.get<ApiList<Vault>>(Api.Combine("buckets", projectId, "vaults", vaultId, "vaults"));
 		}
 
-		static async public Task<Vault> GetVault(Api api, long projectId, long vaultId) {
-			return await api.GetAsync<Vault>(Api.Combine("buckets", projectId, "vaults", vaultId));
+		static  public Vault GetVault(Api api, long projectId, long vaultId) {
+			return  api.get<Vault>(Api.Combine("buckets", projectId, "vaults", vaultId));
 		}
 
-		async public Task<ApiList<Vault>> GetVaults(Api api) {
-			return await GetVaults(api, bucket.id, id);
+		 public ApiList<Vault> GetVaults(Api api) {
+			return  GetVaults(api, bucket.id, id);
 		}
 
-		async public Task<Vault> CreateVault(Api api, string title) {
-			return await api.PostAsync<Vault>(Api.Combine("buckets", bucket.id, "vaults", id, "vaults"), null, new {
+		 public Vault CreateVault(Api api, string title) {
+			return  api.Post<Vault>(Api.Combine("buckets", bucket.id, "vaults", id, "vaults"), null, new {
 				title
 			});
 		}
 
-		async public Task<Vault> Update(Api api, string title) {
-			return await api.PutAsync<Vault>(Api.Combine("buckets", bucket.id, "vaults", id), null, new {
+		 public Vault Update(Api api, string title) {
+			return  api.Put<Vault>(Api.Combine("buckets", bucket.id, "vaults", id), null, new {
 				title
 			});
 		}
 
-		async public Task<ApiList<Document>> GetDocuments(Api api) {
-			return await Document.GetDocuments(api, bucket.id, id);
+		 public ApiList<Document> GetDocuments(Api api) {
+			return  Document.GetDocuments(api, bucket.id, id);
 		}
 
-		async public Task<Document> GetDocument(Api api, long documentId) {
-			return await Document.GetDocument(api, bucket.id, documentId);
+		 public Document GetDocument(Api api, long documentId) {
+			return  Document.GetDocument(api, bucket.id, documentId);
 		}
 
-		async public Task<Document> CreateDocument(Api api, string title, string content, Status status = Status.active) {
-			return await Document.CreateDocument(api, bucket.id, id, title, content, status);
+		 public Document CreateDocument(Api api, string title, string content, Status status = Status.active) {
+			return  Document.CreateDocument(api, bucket.id, id, title, content, status);
 		}
 
-		async public Task<ApiList<Upload>> GetUploads(Api api) {
-			return await Upload.GetUploads(api, bucket.id, id);
+		 public ApiList<Upload> GetUploads(Api api) {
+			return  Upload.GetUploads(api, bucket.id, id);
 		}
 
-		async public Task<Upload> GetUpload(Api api, long uploadId) {
-			return await Upload.GetUpload(api, bucket.id, uploadId);
+		 public Upload GetUpload(Api api, long uploadId) {
+			return  Upload.GetUpload(api, bucket.id, uploadId);
 		}
 
-		async public Task<Upload> CreateUpload(Api api, string file, string description, string basename = null) {
-			return await Upload.CreateUpload(api, bucket.id, id, file, description, basename);
+		 public Upload CreateUpload(Api api, string file, string description, string basename = null) {
+			return  Upload.CreateUpload(api, bucket.id, id, file, description, basename);
 		}
 
 	}
 
 	public class Document : RecordingWithComments {
 		public Parent parent;
-		public int position;
+		public long position;
 		public string content;
 
-		async public static Task<ApiList<Document>> GetDocuments(Api api, long projectId, long vaultId) {
-			return await api.GetAsync<ApiList<Document>>(Api.Combine("buckets", projectId, "vaults", vaultId, "documents"));
+		 public static ApiList<Document> GetDocuments(Api api, long projectId, long vaultId) {
+			return  api.get<ApiList<Document>>(Api.Combine("buckets", projectId, "vaults", vaultId, "documents"));
 		}
 
-		async public static Task<Document> GetDocument(Api api, long projectId, long documentId) {
-			return await api.GetAsync<Document>(Api.Combine("buckets", projectId, "documents", documentId));
+		 public static Document GetDocument(Api api, long projectId, long documentId) {
+			return  api.get<Document>(Api.Combine("buckets", projectId, "documents", documentId));
 		}
 
-		async public static Task<Document> CreateDocument(Api api, long projectId, long vaultId, 
+		 public static Document CreateDocument(Api api, long projectId, long vaultId, 
 				string title, string content, Status status = Status.active) {
-			return await api.PostAsync<Document>(Api.Combine("buckets", projectId, "vaults", vaultId, "documents"), null, new {
+			return  api.Post<Document>(Api.Combine("buckets", projectId, "vaults", vaultId, "documents"), null, new {
 				title,
 				content,
 				status
 			});
 		}
 
-		async public Task<Document> Update(Api api, string title, string content) {
-			return await api.PutAsync<Document>(Api.Combine("buckets", bucket.id, "documents", id), null, new {
+		 public Document Update(Api api, string title, string content) {
+			return  api.Put<Document>(Api.Combine("buckets", bucket.id, "documents", id), null, new {
 				title,
 				content
 			});
@@ -104,39 +103,39 @@ namespace BaseCampApi {
 	public class Attachment : ApiEntry {
 		public string attachable_sgid;
 
-		async public static Task<Attachment> CreateAttachment(Api api, string file) {
+		 public static Attachment CreateAttachment(Api api, string file) {
 			string name = Path.GetFileName(file);
 			using (FileStream f = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-				return await api.PostAsync<Attachment>("attachments", new { name }, f);
+				return  api.Post<Attachment>("attachments", new { name }, f);
 		}
 	}
 
 	public class Upload : RecordingWithComments {
-		public int position;
+		public long position;
 		public Parent parent;
 		public string description;
 		public string filename;
 		public string content_type;
 		public long byte_size;
-		public int width;
-		public int height;
+		public long width;
+		public long height;
 		public string download_url;
 		public string app_download_url;
 
-		async public static Task<ApiList<Upload>> GetUploads(Api api, long projectId, long vaultId) {
-			return await api.GetAsync<ApiList<Upload>>(Api.Combine("buckets", projectId, "vaults", vaultId, "uploads"));
+		 public static ApiList<Upload> GetUploads(Api api, long projectId, long vaultId) {
+			return  api.get<ApiList<Upload>>(Api.Combine("buckets", projectId, "vaults", vaultId, "uploads"));
 		}
 
-		async public static Task<Upload> GetUpload(Api api, long projectId, long uploadId) {
-			return await api.GetAsync<Upload>(Api.Combine("buckets", projectId, "uploads", uploadId));
+		 public static Upload GetUpload(Api api, long projectId, long uploadId) {
+			return  api.get<Upload>(Api.Combine("buckets", projectId, "uploads", uploadId));
 		}
 
-		async public static Task<Upload> CreateUpload(Api api, long projectId, long vaultId, string file, string description, string base_name = null) {
-			Attachment a = await Attachment.CreateAttachment(api, file);
+		 public static Upload CreateUpload(Api api, long projectId, long vaultId, string file, string description, string base_name = null) {
+			Attachment a =  Attachment.CreateAttachment(api, file);
 			if (base_name == null)
 				base_name = file;
 			base_name = Path.GetFileNameWithoutExtension(base_name);
-			return await api.PostAsync<Upload>(Api.Combine("buckets", projectId, "vaults", vaultId, "uploads"), null,
+			return  api.Post<Upload>(Api.Combine("buckets", projectId, "vaults", vaultId, "uploads"), null,
 				new {
 					a.attachable_sgid,
 					base_name,
@@ -144,10 +143,10 @@ namespace BaseCampApi {
 				});
 		}
 
-		async public Task<Upload> Update(Api api, string description, string base_name = null) {
+		 public Upload Update(Api api, string description, string base_name = null) {
 			if (base_name == null)
 				base_name = Path.GetFileNameWithoutExtension(filename);
-			return await api.PutAsync<Upload>(Api.Combine("buckets", bucket.id, "uploads", id), null, new {
+			return  api.Put<Upload>(Api.Combine("buckets", bucket.id, "uploads", id), null, new {
 				base_name,
 				description
 			});

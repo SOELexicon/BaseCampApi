@@ -26,8 +26,8 @@ namespace BaseCampApi {
 	/// Used when adding people to a project
 	/// </summary>
 	public class UpdateProjectUsersList {
-		public long[] grant;
-		public long[] revoke;
+		public long [] grant;
+		public long [] revoke;
 		public NewPerson [] create;
 	}
 
@@ -56,31 +56,31 @@ namespace BaseCampApi {
 		public Company company;
 		public bool client;
 
-		static async public Task<ApiList<Person>> GetAllPeople(Api api) {
-			return await api.GetAsync<ApiList<Person>>("people");
+		static  public ApiList<Person> GetAllPeople(Api api) {
+			return  api.get<ApiList<Person>>("people");
 		}
 
-		static async public Task<ApiList<Person>> GetPeopleOnProject(Api api, long projectId) {
-			return await api.GetAsync<ApiList<Person>>(Api.Combine("projects", projectId, "people"));
+		static  public ApiList<Person> GetPeopleOnProject(Api api, long projectId) {
+			return  api.get<ApiList<Person>>(Api.Combine("projects", projectId, "people"));
 		}
 
 		/// <summary>
 		/// Update who can access a project
 		/// </summary>
-		static async public Task<UpdateProjectUsersResult> UpdateProjectUsers(Api api, long projectId, UpdateProjectUsersList changes) {
-			return await api.PutAsync<UpdateProjectUsersResult>(Api.Combine("projects", projectId, "people", "users"), null, changes);
+		static  public UpdateProjectUsersResult UpdateProjectUsers(Api api, long projectId, UpdateProjectUsersList changes) {
+			return  api.Put<UpdateProjectUsersResult>(Api.Combine("projects", projectId, "people", "users"), null, changes);
 		}
 
-		static async public Task<ApiList<Person>> GetPingablePeople(Api api) {
-			return await api.GetAsync<ApiList<Person>>(Api.Combine("circles", "people"));
+		static  public ApiList<Person> GetPingablePeople(Api api) {
+			return  api.get<ApiList<Person>>(Api.Combine("circles", "people"));
 		}
 
-		static async public Task<Person> GetPerson(Api api, long id) {
-			return await api.GetAsync<Person>(Api.Combine("people", id));
+		static  public Person GetPerson(Api api, long id) {
+			return  api.get<Person>(Api.Combine("people", id));
 		}
 
-		static async public Task<Person> GetMyProfile(Api api) {
-			return await api.GetAsync<Person>(Api.Combine("my", "profile"));
+		static  public Person GetMyProfile(Api api) {
+			return  api.get<Person>(Api.Combine("my", "profile"));
 		}
 
 	}

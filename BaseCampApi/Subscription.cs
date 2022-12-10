@@ -10,40 +10,40 @@ namespace BaseCampApi {
 	}
 	public class Subscription : ApiEntryBase {
 		public bool subscribed;
-		public int count;
+		public long count;
 		public string url;
 		public Person[] subscribers;
 
-		static async public Task<Subscription> GetSubscription(Api api, long projectId, long recordingId) {
-			return await api.GetAsync<Subscription>(Api.Combine("buckets", projectId, "recordings", recordingId, "subscription"));
+		static  public Subscription GetSubscription(Api api, long projectId, long recordingId) {
+			return  api.get<Subscription>(Api.Combine("buckets", projectId, "recordings", recordingId, "subscription"));
 		}
 
-		static async public Task<Subscription> GetSubscription(Api api, ISubscribable item) {
-			return await api.GetAsync<Subscription>(Api.UriToApi(item.SubscriptionUrl));
+		static  public Subscription GetSubscription(Api api, ISubscribable item) {
+			return  api.get<Subscription>(Api.UriToApi(item.SubscriptionUrl));
 		}
 
-		static async public Task<Subscription> SubscribeMe(Api api, long projectId, long recordingId) {
-			return await api.PostAsync<Subscription>(Api.Combine("buckets", projectId, "recordings", recordingId, "subscription"));
+		static  public Subscription SubscribeMe(Api api, long projectId, long recordingId) {
+			return  api.Post<Subscription>(Api.Combine("buckets", projectId, "recordings", recordingId, "subscription"));
 		}
 
-		static async public Task<Subscription> SubscribeMe(Api api, ISubscribable item) {
-			return await api.PostAsync<Subscription>(Api.UriToApi(item.SubscriptionUrl));
+		static public Subscription SubscribeMe(Api api, ISubscribable item) {
+			return  api.Post<Subscription>(Api.UriToApi(item.SubscriptionUrl));
 		}
 
-		static async public Task UnsubscribeMe(Api api, long projectId, long recordingId) {
-			await api.DeleteAsync<Subscription>(Api.Combine("buckets", projectId, "recordings", recordingId, "subscription"));
+		static  public void  UnsubscribeMe(Api api, long projectId, long recordingId) {
+			 api.Delete<Subscription>(Api.Combine("buckets", projectId, "recordings", recordingId, "subscription"));
 		}
 
-		static async public Task UnsubscribeMe(Api api, ISubscribable item) {
-			await api.DeleteAsync<Subscription>(Api.UriToApi(item.SubscriptionUrl));
+		static  public void UnsubscribeMe(Api api, ISubscribable item) {
+			 api.Delete<Subscription>(Api.UriToApi(item.SubscriptionUrl));
 		}
 
-		static async public Task<Subscription> Update(Api api, long projectId, long recordingId, UpdateSubscriptionsList updates) {
-			return await api.PutAsync<Subscription>(Api.Combine("buckets", projectId, "recordings", recordingId, "subscription"), null, updates);
+		static  public Subscription Update(Api api, long projectId, long recordingId, UpdateSubscriptionsList updates) {
+			return  api.Put<Subscription>(Api.Combine("buckets", projectId, "recordings", recordingId, "subscription"), null, updates);
 		}
 
-		static async public Task<Subscription> Update(Api api, ISubscribable item, UpdateSubscriptionsList updates) {
-			return await api.PutAsync<Subscription>(Api.UriToApi(item.SubscriptionUrl), null, updates);
+		static  public Subscription Update(Api api, ISubscribable item, UpdateSubscriptionsList updates) {
+			return  api.Put<Subscription>(Api.UriToApi(item.SubscriptionUrl), null, updates);
 		}
 
 	}
