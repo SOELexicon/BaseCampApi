@@ -182,17 +182,14 @@ In order to use the Basecamp API you need to register your application at (launc
 
 This information has to be provided in an object that implements the [ISettings](../master/BaseCampApi/Settings.cs) interface, which is then used to create a BaseCampApi instance. A Settings class which imnplements this interface is provided, to save you work. This provides a static Load method, reads the settings from *LocalApplicationData*/BaseCampApi/Settings.json. On a Windows 10 machine, *LocalApplicationData* is `C:\Users\<USER>\AppData\Local`, on Linux it is `~user/.local/share`.
 
-## Testing
-
-In order to run the Unit Tests provided, you must provide additional data in your ISettings object - see the Settings object in [UnitTest1.cs](../master/Tests/UnitTest1.cs).
 
 ## Hooks for more complex uses
 
 You do not have to use the provided Settings class, provided you have a class that implements ISettings.
 
-As part of the OAuth2 process, the default implementation starts a browser to obtain authorisation. This is done by calling OpenBrowser. You can provide an alternative action to open a browser, or otherwise call the 37signals page to ask for authorisation.
+As part of the OAuth2 process, the default implementation redirects to obtain authorisation. This is done by calling Response.Redirect like the code sample above. You can provide an alternative action to open a browser, or otherwise call the 37signals page to ask for authorisation.
 
-Once authorisation is complete, the OAuth2 process will redirect the browser to the redirect url you provide in the settings. The default implementation provides an extremely dumb web server to listed on the redirect url port, and collect the `code=` parameter from the request. You can provide an alternative by providing a `WaitForRedirect` async function.
+Once authorisation is complete, the OAuth2 process will redirect the browser to the redirect url you provide in the settings. The default implementation by default you will need to be able to handle the redirect using the examples ive listed above, and collect the `code=` parameter from the request.
 
 These options would be useful if you were using the Api in your own Web Server, for instance.
 
@@ -202,11 +199,11 @@ This wrapper is licensed under creative commons share-alike, see [license.txt](.
 
 ## Using the Api
 
-The Unit Tests should give you sufficient examples on using the Api.
+The Unit Test file should give you a rough idea of how to query the data. except for its written in an async format which doesnt work. ill get around to changing these at some point. but if you follow the code examples above it should get you started.
 
 An Api instance is created by passing it an object that implements ISettings (a default class is provided which will read the settings from a json file). The Api instance is IDisposable, so should be Disposed when no longer needed (this is because it contains an HttpClient).
 
-C# classes are provided for the objects you can send to or receive from the BaseCampApi api. For instance the Channel object represents channels. These main objects have methods which call the BaseCampApi api - such as Channel.Create to create a new channel, Channel.GetById to get channel details, etc.
+C# classes are provided for the objects you can send to or receive from the BaseCampApi. For instance the Channel object represents channels. These main objects have methods which call the BaseCampApi api - such as Channel.Create to create a new channel, Channel.GetById to get channel details, etc.
 
 Some Api calls return a list of items (such as Team.GetChannelsForUser). These are returned as an ApiList<Channel>. The BaseCampApi api itself usually only returns the first few items in the list, and needs to be called again to return the next chunk of items. This is all done for you by ApiList - it has a method called All(Api) which will return an IEnumerable of the appropriate listed object. Enumerating the enumerable will return all the items in the first chunk, then call the BaseCampApi api to get the next chunk, return them and so on. It hides all that work from the caller, while remaining as efficient as possible by only getting data when needed - for instance, using Linq calls like Any or First will stop getting data when the first item that matches the selection function is found.
 
