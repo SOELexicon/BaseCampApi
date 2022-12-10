@@ -178,9 +178,11 @@ catch(Exception ex)
 
 ## Setup before using the API
 
-In order to use the Basecamp API you need to register your application at (launchpad.37signals.com/integrations)[launchpad.37signals.com/integrations]. This returns a Client Id and Client Secret. When registering, you have to provide a redirect uri for the OAuth2 authorisation process. For simple use, provide something like http://localhost:9999 (choose another port number if you like).
+In order to use the Basecamp API you need to register your application at (launchpad.37signals.com/integrations)[launchpad.37signals.com/integrations]. This returns a Client Id and Client Secret. When registering, you have to provide a redirect uri for the OAuth2 authorisation process. For simple use, provide something like http://localhost/basecamp or your prefered redirect url to handle auth.
 
 This information has to be provided in an object that implements the [ISettings](../master/BaseCampApi/Settings.cs) interface, which is then used to create a BaseCampApi instance. A Settings class which imnplements this interface is provided, to save you work. This provides a static Load method, reads the settings from *LocalApplicationData*/BaseCampApi/Settings.json. On a Windows 10 machine, *LocalApplicationData* is `C:\Users\<USER>\AppData\Local`, on Linux it is `~user/.local/share`.
+
+Theres also an example below of loading these settings via code. which is the method i use
 
 
 ## Hooks for more complex uses
